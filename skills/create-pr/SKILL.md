@@ -1,5 +1,5 @@
 ---
-name: ship
+name: create-pr
 description: Push the current branch and open a PR to merge it into main, with a title derived from the branch name and commit changes
 user-invocable: true
 allowed-tools: Bash

@@ -1,5 +1,5 @@
 ---
-name: merge
+name: merge-pr
 description: Merge the open PR for the current branch into main, delete the branch, and pull main
 user-invocable: true
 allowed-tools: Bash
