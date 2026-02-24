@@ -1,0 +1,19 @@
+{
+  "statusLine": {
+    "type": "command",
+    "command": "python3 /home/smburns/.claude/statusline-command.sh"
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "ruff check --fix . 2>/dev/null; ruff format . 2>/dev/null"
+          }
+        ]
+      }
+    ]
+  }
+}
