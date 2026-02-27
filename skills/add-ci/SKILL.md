@@ -67,6 +67,7 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
     branches: [main]
 
@@ -108,6 +109,7 @@ name: CI
 
 on:
   push:
+    branches: [main]
   pull_request:
     branches: [main]
 

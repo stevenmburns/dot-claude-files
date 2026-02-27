@@ -25,5 +25,8 @@ These instructions apply to all projects.
 - Do not push to main without being explicitly asked.
 - Ask before running destructive git operations (reset --hard, force push, etc.)
 
+## New Repository Setup
+- When initialising a new repo, generate an MIT `LICENSE` file with copyright holder "Steven Burns" and the current year.
+
 ## Project-Specific Notes
 See each project's CLAUDE.md for project-specific conventions.

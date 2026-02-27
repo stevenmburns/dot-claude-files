@@ -1,8 +1,4 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": "python3 /home/smburns/.claude/statusline-command.sh"
-  },
   "hooks": {
     "PostToolUse": [
       {
@@ -15,5 +11,12 @@
         ]
       }
     ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "python3 /home/smburns/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "code-simplifier@claude-plugins-official": true
   }
 }
