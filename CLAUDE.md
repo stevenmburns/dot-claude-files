@@ -19,6 +19,9 @@ These instructions apply to all projects.
 ## New Repository Setup
 - When initialising a new repo, generate an MIT `LICENSE` file with copyright holder "Steven Burns" and the current year.
 
+## Editing Code
+- When adding new imports and the code that uses them, always make both changes in a single Edit call. Never add an import in one edit and its usage in a separate edit — linters run between tool calls and will strip unused imports.
+
 ## File Access
 - For large files, prefer Grep (backed by ripgrep) over reading the whole file; use Bash with sed or awk as a fallback when Grep is insufficient.
 
