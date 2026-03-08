@@ -15,6 +15,7 @@ These instructions apply to all projects.
 - Almost always work in a branch. Use the /branch skill.
 - Use PRs for most merges to main. Use the /create-pr and /merge-pr skills.
 - Do not push to main without being explicitly asked.
+- For documentation-only commits pushed directly to main, add `[skip ci]` to the commit message to avoid burning CI minutes.
 
 ## New Repository Setup
 - When initialising a new repo, generate an MIT `LICENSE` file with copyright holder "Steven Burns" and the current year.
