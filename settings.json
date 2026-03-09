@@ -1,20 +1,8 @@
 {
-  "hooks": {
-    "PostToolUse": [
-      {
-        "matcher": "Edit|Write|NotebookEdit",
-        "hooks": [
-          {
-            "type": "command",
-            "command": "/home/smburns/.claude/hooks/ruff-on-py.sh"
-          }
-        ]
-      }
-    ]
-  },
+  "autoUpdatesChannel": "stable",
   "statusLine": {
     "type": "command",
-    "command": "python3 /home/smburns/.claude/statusline-command.sh"
+    "command": "python3 $HOME/.claude/statusline-command.sh"
   },
   "enabledPlugins": {
     "code-simplifier@claude-plugins-official": true
