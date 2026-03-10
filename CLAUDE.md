@@ -14,6 +14,7 @@ These instructions apply to all projects.
 - Commit as often as makes sense without asking for permission
 - Almost always work in a branch. Use the /branch skill.
 - Use PRs for most merges to main. Use the /create-pr and /merge-pr skills.
+- Default to targeting `main` as the PR base. If about to target another open branch, pause and confirm — stacked PRs auto-close when the base branch is deleted on merge, which is usually surprising. Prefer merging dependencies in order over stacking.
 - Do not push to main without being explicitly asked.
 - For documentation-only commits pushed directly to main, add `[skip ci]` to the commit message to avoid burning CI minutes.
 
