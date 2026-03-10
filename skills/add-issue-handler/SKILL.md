@@ -49,6 +49,7 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - name: Set up Claude config
@@ -57,7 +58,6 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: "/fix-issue ${{ github.event.issue.number }}"
-          allowed_tools: "Bash,Glob,Grep,Read,Write,Edit"
 
   build-feature:
     if: contains(github.event.issue.labels.*.name, 'enhancement')
@@ -66,6 +66,7 @@ jobs:
       contents: write
       issues: write
       pull-requests: write
+      id-token: write
     steps:
       - uses: actions/checkout@v4
       - name: Set up Claude config
@@ -74,7 +75,6 @@ jobs:
         with:
           anthropic_api_key: ${{ secrets.ANTHROPIC_API_KEY }}
           prompt: "/build-issue ${{ github.event.issue.number }}"
-          allowed_tools: "Bash,Glob,Grep,Read,Write,Edit"
 ```
 
 ### 4. Commit
@@ -88,5 +88,7 @@ git commit -m "ci: add Claude Code issue handler workflow"
 
 - The path to the workflow file created
 - Remind them to add `ANTHROPIC_API_KEY` to repo secrets: **Settings → Secrets and variables → Actions → New repository secret**
+- Remind them to install the **Claude Code GitHub App** on the repo: **https://github.com/apps/claude** → Install → select the repo. Without this the action will fail with a 401 error.
+- The dot-claude-files repo must be **public** (or cloned with a token) — the CI runner cannot authenticate to clone a private repo over HTTPS without credentials.
 - The workflow fires when a **bug** or **enhancement** label is present at issue open time, or added later via labeling
 - Run `/create-pr` when ready to merge
