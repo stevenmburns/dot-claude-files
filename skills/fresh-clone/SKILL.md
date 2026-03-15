@@ -1,3 +1,10 @@
+---
+name: fresh-clone
+description: Clone the current repo into a sibling directory with a fresh Python venv
+user-invocable: true
+allowed-tools: Bash, Read, Glob
+---
+
 # Fresh Clone
 
 Create a fresh clone of the current repository in a parallel directory, with its own Python virtual environment.
