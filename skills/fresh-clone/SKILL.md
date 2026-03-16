@@ -17,8 +17,8 @@ Create a fresh clone of the current repository in a parallel directory, with its
 
 2. Choose the clone directory:
    - The clone goes in a sibling directory next to the current repo
-   - Name it `<repo-name>-clone` (e.g., if the repo is `my-project`, clone to `../my-project-clone`)
-   - If that directory already exists, append a number: `<repo-name>-clone-2`, `-3`, etc.
+   - First, determine the **base name**: take the current directory name and strip any existing `-cloneN` suffix (e.g., `my-project-clone2` → `my-project`, `my-project` → `my-project`)
+   - Name the clone `<base-name>-clone0`. If that exists, try `-clone1`, `-clone2`, etc. until a free name is found
 
 3. Clone the repo:
    - `git clone <remote-url> <clone-dir>`
