@@ -9,6 +9,7 @@ These instructions apply to all projects.
 ## General Preference
 - Keep responses concise and direct
 - TypeScript: prefer explicit types over `any`
+- Python projects: use `src/<package_name>/` layout with relative intra-package imports
 
 ## Workflow
 - Commit as often as makes sense without asking for permission
