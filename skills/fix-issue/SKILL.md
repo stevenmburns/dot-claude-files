@@ -1,3 +1,10 @@
+---
+name: fix-issue
+description: Read a GitHub issue, implement a fix, and open a PR that references the issue
+user-invocable: true
+allowed-tools: Bash, Glob, Grep, Read, Write, Edit
+---
+
 # Fix Issue
 
 Read a GitHub issue, implement a fix, and open a PR that references the issue.
