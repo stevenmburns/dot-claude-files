@@ -1,17 +1,4 @@
 {
-  "statusLine": {
-    "type": "command",
-    "command": "python3 $HOME/.claude/statusline-command.sh"
-  },
-  "enabledPlugins": {
-    "code-simplifier@claude-plugins-official": true,
-    "frontend-design@claude-plugins-official": true
-  },
-  "effortLevel": "medium",
-  "autoUpdatesChannel": "stable",
-  "permissions": {
-    "skipDangerousModePermissionPrompt": true
-  },
   "hooks": {
     "PostToolUse": [
       {
@@ -24,5 +11,16 @@
         ]
       }
     ]
-  }
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "python3 $HOME/.claude/statusline-command.sh"
+  },
+  "enabledPlugins": {
+    "code-simplifier@claude-plugins-official": true,
+    "frontend-design@claude-plugins-official": true
+  },
+  "effortLevel": "medium",
+  "autoUpdatesChannel": "stable",
+  "skipDangerousModePermissionPrompt": true
 }
