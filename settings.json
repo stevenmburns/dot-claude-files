@@ -9,7 +9,9 @@
   },
   "effortLevel": "medium",
   "autoUpdatesChannel": "stable",
-  "skipDangerousModePermissionPrompt": true,
+  "permissions": {
+    "skipDangerousModePermissionPrompt": true
+  },
   "hooks": {
     "PostToolUse": [
       {
