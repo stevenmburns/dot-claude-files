@@ -8,13 +8,15 @@ FILE=$(python3 -c "import sys,json; print(json.load(sys.stdin).get('tool_input',
 [[ "$FILE" == *.py ]] || exit 0
 [[ -f "$FILE" ]] || exit 0
 
-# Walk up from the file's directory looking for a .venv
-find_venv() {
+# Walk up from the file's directory looking for a marker file/dir.
+# Echoes the directory containing the marker, or returns 1.
+find_up() {
+    local marker="$1"
     local dir
     dir=$(cd "$(dirname "$FILE")" 2>/dev/null && pwd) || return 1
     while [[ -n "$dir" && "$dir" != "/" ]]; do
-        if [[ -d "$dir/.venv" ]]; then
-            echo "$dir/.venv"
+        if [[ -e "$dir/$marker" ]]; then
+            echo "$dir"
             return 0
         fi
         local parent
@@ -25,7 +27,8 @@ find_venv() {
     return 1
 }
 
-VENV=$(find_venv)
+VENV_DIR=$(find_up .venv)
+VENV=${VENV_DIR:+$VENV_DIR/.venv}
 
 # Pick a ruff invocation: prefer venv binary, then `python -m ruff`, then PATH ruff.
 if [[ -n "$VENV" && -x "$VENV/Scripts/ruff.exe" ]]; then
@@ -44,6 +47,15 @@ else
 fi
 
 "${RUFF[@]}" check --fix "$FILE" >/dev/null 2>&1
-"${RUFF[@]}" format "$FILE" >/dev/null 2>&1
+
+# Only run `ruff format` if the project has explicitly opted in by
+# declaring a [tool.ruff.format] section in pyproject.toml. Default to
+# leaving formatting alone — repos with non-default style (2-space
+# indent, single-quote, etc.) shouldn't get clobbered by Edit-time
+# canonicalization that their own CI doesn't enforce.
+PROJECT_DIR=$(find_up pyproject.toml)
+if [[ -n "$PROJECT_DIR" ]] && grep -qE '^\[tool\.ruff\.format\]' "$PROJECT_DIR/pyproject.toml" 2>/dev/null; then
+    "${RUFF[@]}" format "$FILE" >/dev/null 2>&1
+fi
 
 exit 0
