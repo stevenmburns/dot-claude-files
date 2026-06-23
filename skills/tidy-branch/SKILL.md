@@ -19,13 +19,13 @@ Review the commits on the current branch (those that would land on `main` via re
 
 2. **Run lint and fix.** Run the project's linter on the entire repo (the same scope CI checks — typically `ruff check --fix` and `ruff format` for Python projects; check `pyproject.toml` or CI config for the exact commands and paths). If the linter produces changes, stage and commit them with a `style: ruff fix` message (including the `Co-Authored-By` trailer). This ensures lint fixes are captured as a commit *before* the rebase plan is built, so they can be squashed into their logical parent during tidying. If the linter finds unfixable errors, stop and report.
 
-3. **Determine the base.** Find what the branch diverges from. Usually this is `main`, but check with `git merge-base HEAD main` and confirm the base commit exists. Use the output of `git log main..HEAD --oneline` to list the candidate commits.
+3. **Determine the base.** Fetch the latest remote state *first* — `git fetch origin` — then base everything on the remote-tracking ref `origin/main`, **not** the local `main` branch. The local `main` ref is frequently stale (it only moves when you check it out and pull), and comparing against it lists commits that are *already* on the remote `main` as if they were new candidates to tidy — which is wrong and dangerous (you'd be rewriting already-merged history). Confirm the base with `git merge-base HEAD origin/main` and list candidates with `git log origin/main..HEAD --oneline`. (Substitute the repo's actual default branch if it isn't `main`.) If `git log main..HEAD` and `git log origin/main..HEAD` disagree, that disagreement *is* the signal that local `main` is stale — trust `origin/main`.
 
 4. **Check push state.** Run `git log @{u}..HEAD --oneline` and `git log HEAD..@{u} --oneline` (the second may fail if no upstream — that's fine). Record whether the branch has an upstream and whether the local/remote have diverged. This determines whether step 7 needs a force-push.
 
-5. **Analyze the commits.** For each commit in `git log main..HEAD --oneline`:
-   - Read the full message with `git log main..HEAD --format=fuller`
-   - Note which files each one touches with `git log main..HEAD --stat`
+5. **Analyze the commits.** For each commit in `git log origin/main..HEAD --oneline`:
+   - Read the full message with `git log origin/main..HEAD --format=fuller`
+   - Note which files each one touches with `git log origin/main..HEAD --stat`
    - Identify candidates for:
      - **Squash** — commits that are fixups, typo fixes, "address review" commits, or small amendments to a logical parent commit. Look for message prefixes like "fix", "typo", "wip", "review", "fixup!", "squash!", or commits that only touch files already touched by an earlier commit.
      - **Reword** — commits with vague messages ("wip", "update", "changes"), missing context, or wrong tone (e.g. "fixed bug" instead of describing the root cause).
@@ -46,7 +46,7 @@ Review the commits on the current branch (those that would land on `main` via re
      where `<msg-editor-script>` is a small shell script the skill writes that checks the commit being edited and substitutes the appropriate pre-written message. For the common case of a single squash with a known final message, a simpler pattern is `GIT_EDITOR='cp /tmp/new-msg.txt' git rebase -i <base>`.
    - If the rebase hits a conflict, stop and report to the user — do not try to auto-resolve. The user will resolve and either `git rebase --continue` manually or abort.
 
-8. **Verify the result.** After rebase completes, show `git log main..HEAD --oneline` so the user can see the new tidy history. Run `git log main..HEAD --stat` briefly to confirm file counts and that no content was dropped unexpectedly. If the rebase changed the diff relative to main (it shouldn't unless `drop` was used), flag this explicitly.
+8. **Verify the result.** After rebase completes, show `git log origin/main..HEAD --oneline` so the user can see the new tidy history. Run `git log origin/main..HEAD --stat` briefly to confirm file counts and that no content was dropped unexpectedly. If the rebase changed the diff relative to `origin/main` (it shouldn't unless `drop` was used), flag this explicitly.
 
 9. **Force-push if needed.** If the branch had an upstream and the history rewrite diverged it:
    - Use `git push --force-with-lease` (never plain `--force`) to update the remote branch. `--force-with-lease` refuses to push if someone else has pushed to the branch since the last fetch, which protects collaborators.
@@ -55,7 +55,7 @@ Review the commits on the current branch (those that would land on `main` via re
 
 ## Important notes
 
-- **Never rewrite commits that already landed on main** or another shared/protected branch. The skill targets only commits between `main` and `HEAD` — commits older than the merge base are never touched.
+- **Never rewrite commits that already landed on main** or another shared/protected branch. The skill targets only commits between `origin/main` and `HEAD` (the *fetched* remote ref — see step 3, not the possibly-stale local `main`) — commits already on the remote default branch are never touched. Skipping the `git fetch` in step 3 is the classic way to violate this: a stale local `main` makes already-merged commits look like fresh branch work.
 - **Force-push uses `--force-with-lease`, not `--force`**. This is non-negotiable even on solo repos, because the cost of a mistake is lost work.
 - **Ask, don't guess, for edge cases.** If a commit message is terse but might be intentional (e.g. "WIP: parking for tomorrow" on a draft PR), ask the user before rewording. If a commit looks like a revert, ask before dropping.
 - **Conflict recovery is the user's job.** This skill does not try to resolve conflicts automatically. If a rebase fails, stop and hand back to the user with `git status` output.
