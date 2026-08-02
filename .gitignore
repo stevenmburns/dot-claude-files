@@ -1,4 +1,6 @@
 .credentials.json
+.last-cleanup
+.last-update-result.json
 backups/
 cache/
 debug/
