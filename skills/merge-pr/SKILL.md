@@ -20,4 +20,17 @@ Merge the open pull request for the current branch.
 5. Run `gh pr merge --rebase --delete-branch` to rebase-merge and delete the remote branch. This preserves each commit's identity on main (one PR = N commits, not one squashed blob), which makes `git blame`, `git bisect`, and "which PR introduced this" queries meaningfully finer-grained. The individual commits on the branch should already be tidy — if they aren't, interactive-rebase the branch locally before running this skill. (`gh pr merge` will fail clearly if no PR exists, so no separate confirmation step is needed.)
 6. Switch to main and pull: `git checkout main && git pull --rebase` (use `--rebase` to avoid creating a pointless merge commit if main moved while the PR was in review)
 
+## Auto-merge fast path (repos with `allow_auto_merge`)
+
+Where the repo has auto-merge enabled AND branch protection with required
+checks (antennaknobs since 2026-08-05; check with
+`gh api repos/{owner}/{repo} --jq .allow_auto_merge`), you may replace
+steps 4-5 with `gh pr merge --auto --rebase --delete-branch`: GitHub lands
+the PR the moment the required checks go green, with no babysitting. Only
+do this when the user doesn't need the post-merge steps (pull main, verify
+the fresh main CI run) reported synchronously — with `--auto` those must
+happen in a later turn, after the merge notification. On repos WITHOUT
+required checks, `--auto` merges immediately regardless of CI, so never
+use it there — keep the watch-then-merge flow.
+
 Do not ask for confirmation. Wait for CI, merge, clean up, and report the result.
