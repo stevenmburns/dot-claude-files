@@ -3,11 +3,14 @@
 .last-update-result.json
 backups/
 cache/
+chrome/
+daemon/
 debug/
 downloads/
 file-history/
 history.jsonl
 ide/
+jobs/
 paste-cache/
 plans/
 plugins/
@@ -15,6 +18,7 @@ projects/
 session-env/
 sessions/
 shell-snapshots/
+skills/synced/
 stats-cache.json
 tasks/
 telemetry/
