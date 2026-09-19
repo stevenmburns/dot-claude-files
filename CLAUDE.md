@@ -37,6 +37,21 @@ Mitigations:
 ## File Access
 - For large files, prefer Grep (backed by ripgrep) over reading the whole file; use Bash with sed or awk as a fallback when Grep is insufficient.
 
+## Gates: a green one can measure nothing
+- A red gate is cheap. A green gate that never exercised the thing it names is not, and it is the failure mode to actively check for.
+- **A harness that builds its own fixture bypasses the production wiring.** If a test constructs the object under test itself, it is not exercising the seam that constructs it in production, and a change wired into that seam will not reach it. Instrument and count which branch actually ran before believing an agreement number — especially when a result is suspiciously clean (a change whose whole premise is that numbers move, reporting them bit-identical, has not run).
+- **A pipe eats the exit code.** `make test | tail -25` reports the status of `tail`, so a failing suite can surface as success — and the pipe usually truncates the evidence for diagnosing it at the same time. Redirect to a file and check the status separately.
+- **A filesystem or process check proves something about whichever process actually ran.** Confirming *which* one was invoked belongs in the method, not in the interpretation afterwards.
+- **A profiler's "peak inside this call" is not a contribution to the process peak.** A large transient allocation can be entirely real and still not be what sets the high-water mark.
+
+## Delegated work
+- A subagent's reported numbers are inputs to review, never substitutes for it. Read the whole diff, re-derive the load-bearing logic, and re-run the full gate yourself before opening a PR — targeted gates passing is not the suite passing.
+- When a reviewer (human or model) reports a factual claim is wrong, verify it independently before acting on it, then say plainly which way it went.
+
+## Shell traps
+- **`pkill -f <pattern>` kills any wrapper whose command line carries the pattern** — an ssh command, or the agent's own `bash -c`. It is not limited to the process you meant.
+- **A `#` in a sed replacement collides with a `#` delimiter.** Pick another delimiter.
+
 ## Intellectual Honesty
 - If a request seems technically wrong, counterproductive, or based on a false assumption, say so before proceeding
 - Don't silently comply with an approach that seems like the wrong solution to the actual problem — flag it first
